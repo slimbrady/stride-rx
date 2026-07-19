@@ -29,8 +29,16 @@ export default function ProfilePage() {
   const [stravaData, setStravaData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const [weight, setWeight] = useState("");
-  const [height, setHeight] = useState("");
+  const [units, setUnits] = useState<"imperial" | "metric">("imperial");
+
+  // Body — imperial inputs
+  const [weightLb, setWeightLb] = useState("");
+  const [heightFt, setHeightFt] = useState("");
+  const [heightIn, setHeightIn] = useState("");
+  // Body — metric inputs (for toggle)
+  const [weightKg, setWeightKg] = useState("");
+  const [heightCm, setHeightCm] = useState("");
+
   const [runningType, setRunningType] = useState<RunningType>("recreational");
   const [footStrike, setFootStrike] = useState<FootStrike>("midfoot");
   const [conditions, setConditions] = useState<Condition[]>(["none"]);
@@ -39,7 +47,8 @@ export default function ProfilePage() {
   const [maxPrice, setMaxPrice] = useState("");
   const [dropMin, setDropMin] = useState("");
   const [dropMax, setDropMax] = useState("");
-  const [maxWeight, setMaxWeight] = useState("");
+  const [maxWeightOz, setMaxWeightOz] = useState("");
+  const [maxWeightG, setMaxWeightG] = useState("");
 
   useEffect(() => {
     // Try to fetch Strava stats if connected
@@ -57,9 +66,25 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    // Convert to metric for the API
+    const weight_kg = units === "imperial"
+      ? (weightLb ? Number(weightLb) * 0.453592 : undefined)
+      : (weightKg ? Number(weightKg) : undefined);
+
+    const height_cm = units === "imperial"
+      ? ((heightFt || heightIn)
+          ? ((Number(heightFt) || 0) * 12 + (Number(heightIn) || 0)) * 2.54
+          : undefined)
+      : (heightCm ? Number(heightCm) : undefined);
+
+    const max_weight_g = units === "imperial"
+      ? (maxWeightOz ? Number(maxWeightOz) * 28.3495 : undefined)
+      : (maxWeightG ? Number(maxWeightG) : undefined);
+
     const profile: UserProfile = {
-      weight_kg: weight ? Number(weight) : undefined,
-      height_cm: height ? Number(height) : undefined,
+      weight_kg,
+      height_cm,
       running_type: runningType,
       foot_strike: footStrike,
       conditions: conditions.length ? conditions : ["none"],
@@ -68,7 +93,7 @@ export default function ProfilePage() {
         max_price_usd: maxPrice ? Number(maxPrice) : undefined,
         drop_min_mm: dropMin ? Number(dropMin) : undefined,
         drop_max_mm: dropMax ? Number(dropMax) : undefined,
-        max_weight_g: maxWeight ? Number(maxWeight) : undefined,
+        max_weight_g,
       },
       ...(stravaData || {}),
     };
@@ -97,17 +122,43 @@ export default function ProfilePage() {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Body */}
           <section>
-            <h2 className="text-sm font-semibold text-zinc-300 mb-3 uppercase tracking-wider">Body</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <label className="block">
-                <span className="text-xs text-zinc-400">Weight (kg)</span>
-                <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm" placeholder="72" />
-              </label>
-              <label className="block">
-                <span className="text-xs text-zinc-400">Height (cm)</span>
-                <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm" placeholder="178" />
-              </label>
+            <div className="flex items-baseline justify-between mb-3">
+              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Body</h2>
+              <div className="flex gap-1 text-xs bg-zinc-900 border border-zinc-800 rounded-lg p-0.5">
+                <button type="button" onClick={() => setUnits("imperial")}
+                  className={`px-2.5 py-1 rounded-md transition ${units === "imperial" ? "bg-zinc-700 text-zinc-100" : "text-zinc-400 hover:text-zinc-200"}`}>ft / lb</button>
+                <button type="button" onClick={() => setUnits("metric")}
+                  className={`px-2.5 py-1 rounded-md transition ${units === "metric" ? "bg-zinc-700 text-zinc-100" : "text-zinc-400 hover:text-zinc-200"}`}>cm / kg</button>
+              </div>
             </div>
+
+            {units === "imperial" ? (
+              <div className="grid grid-cols-3 gap-4">
+                <label className="block">
+                  <span className="text-xs text-zinc-400">Weight (lb)</span>
+                  <input type="number" step="any" value={weightLb} onChange={e => setWeightLb(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm" placeholder="175" />
+                </label>
+                <label className="block">
+                  <span className="text-xs text-zinc-400">Height (ft)</span>
+                  <input type="number" value={heightFt} onChange={e => setHeightFt(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm" placeholder="5" />
+                </label>
+                <label className="block">
+                  <span className="text-xs text-zinc-400">Height (in)</span>
+                  <input type="number" step="0.5" value={heightIn} onChange={e => setHeightIn(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm" placeholder="10" />
+                </label>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                <label className="block">
+                  <span className="text-xs text-zinc-400">Weight (kg)</span>
+                  <input type="number" step="any" value={weightKg} onChange={e => setWeightKg(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm" placeholder="72" />
+                </label>
+                <label className="block">
+                  <span className="text-xs text-zinc-400">Height (cm)</span>
+                  <input type="number" value={heightCm} onChange={e => setHeightCm(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-sm" placeholder="178" />
+                </label>
+              </div>
+            )}
           </section>
 
           {/* Running profile */}
@@ -150,7 +201,10 @@ export default function ProfilePage() {
 
           {/* Preferences */}
           <section>
-            <h2 className="text-sm font-semibold text-zinc-300 mb-3 uppercase tracking-wider">Preferences <span className="normal-case font-normal text-zinc-500">(optional)</span></h2>
+            <div className="flex items-baseline justify-between mb-3">
+              <h2 className="text-sm font-semibold text-zinc-300 uppercase tracking-wider">Preferences <span className="normal-case font-normal text-zinc-500">(optional)</span></h2>
+              <span className="text-xs text-zinc-500">Drop in mm</span>
+            </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <label className="block">
                 <span className="text-xs text-zinc-400">Brands (comma-separated)</span>
@@ -169,8 +223,12 @@ export default function ProfilePage() {
                 <input type="number" value={dropMax} onChange={e => setDropMax(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2" placeholder="10" />
               </label>
               <label className="block col-span-2">
-                <span className="text-xs text-zinc-400">Max shoe weight (g)</span>
-                <input type="number" value={maxWeight} onChange={e => setMaxWeight(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2" placeholder="300" />
+                <span className="text-xs text-zinc-400">Max shoe weight ({units === "imperial" ? "oz" : "g"})</span>
+                {units === "imperial" ? (
+                  <input type="number" step="0.1" value={maxWeightOz} onChange={e => setMaxWeightOz(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2" placeholder="10.5" />
+                ) : (
+                  <input type="number" value={maxWeightG} onChange={e => setMaxWeightG(e.target.value)} className="w-full mt-1 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2" placeholder="300" />
+                )}
               </label>
             </div>
           </section>

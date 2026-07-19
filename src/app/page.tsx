@@ -27,6 +27,9 @@ export default function Home() {
           <Link href="/profile" className="px-7 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold rounded-xl transition text-center">
             Start — Find My Shoes →
           </Link>
+          <a href="https://docs.google.com/document/d/1i_IJXWTfpWhB7ZoaOo7KC3n7p3H3E0SKtPh7qZ0Quco/edit?usp=sharing" target="_blank" className="px-7 py-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium rounded-xl transition text-center">
+            Read the Research
+          </a>
         </div>
 
         <div className="mt-16 text-xs text-zinc-500 text-center max-w-2xl mx-auto space-y-4">

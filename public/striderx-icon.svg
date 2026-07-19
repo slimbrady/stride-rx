@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img">
+  <defs>
+    <!-- Emerald to teal gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#0d9488"/>
+    </linearGradient>
+    <!-- Subtle vignette -->
+    <radialGradient id="vignette" cx="50%" cy="38%" r="60%" fx="50%" fy="38%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.12"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="110" fill="url(#vignette)"/>
+
+  <!-- Stylized running shoe, side profile, facing right -->
+  <g fill="none" stroke="#ffffff" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Sole / midsole — thick, modern super-shoe profile -->
+    <path d="M 88 348 C 88 368 106 382 128 382 L 370 382 C 402 382 426 362 426 334 C 426 318 418 306 402 302 L 360 292"
+          stroke-width="0" fill="#ffffff" fill-opacity="0.95"/>
+    <!-- Upper outline -->
+    <path d="M 102 312 C 96 288 98 256 120 232 C 142 208 170 196 198 192
+             C 230 188 264 196 290 214 C 314 232 338 256 360 270 C 378 282 396 288 412 286"
+          stroke-width="18" stroke="#ffffff"/>
+    <!-- Heel counter -->
+    <path d="M 102 312 C 88 310 78 294 82 270 C 84 252 94 240 102 244"
+          stroke-width="14" stroke="#ffffff" opacity="0.9"/>
+    <!-- Midfoot / lacing area -->
+    <path d="M 198 192 C 210 216 222 242 226 268"
+          stroke-width="10" stroke="#ffffff" opacity="0.85"/>
+    <path d="M 232 198 C 242 220 252 244 254 266"
+          stroke-width="10" stroke="#ffffff" opacity="0.85"/>
+    <path d="M 264 210 C 272 230 278 246 280 264"
+          stroke-width="10" stroke="#ffffff" opacity="0.85"/>
+    <!-- Toe / rocker -->
+    <path d="M 360 270 C 384 272 404 262 412 238"
+          stroke-width="14" stroke="#ffffff"/>
+    <!-- Sole tread detail -->
+    <g stroke="#0d9488" stroke-width="5" opacity="0.5">
+      <path d="M 130 366 L 140 352"/>
+      <path d="M 170 368 L 180 354"/>
+      <path d="M 210 370 L 220 356"/>
+      <path d="M 250 372 L 260 358"/>
+      <path d="M 292 372 L 302 358"/>
+      <path d="M 334 370 L 342 356"/>
+      <path d="M 368 362 L 374 348"/>
+    </g>
+    <!-- Speed lines behind shoe -->
+    <g stroke="#ffffff" stroke-width="8" opacity="0.55" stroke-linecap="round">
+      <path d="M 44 248 L 82 248"/>
+      <path d="M 36 268 L 72 268"/>
+      <path d="M 48 288 L 78 288"/>
+    </g>
+  </g>
+
+  <!-- "Rx" prescription mark — top right -->
+  <g font-family="'Helvetica Neue', 'Inter', 'SF Pro', -apple-system, Helvetica, Arial, sans-serif" font-weight="700">
+    <text x="372" y="168" fill="#ffffff" font-size="84" opacity="0.95" letter-spacing="-2">Rx</text>
+  </g>
+</svg>
